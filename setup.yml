@@ -5,9 +5,9 @@
     become: yes
     become_method: sudo      
   - name: clone myrepo
-    git: repo=https://github.com/shimib/myrepo.git dest=~/repo update=no
+    git: repo=https://github.com/tuerush/myrepo.git dest=~/repo update=no
   - name: clone petclinic 
-    git: repo=https://github.com/shimib/spring-petclinic.git dest=~/petclinic
+    git: repo=https://github.com/tuerush/spring-petclinic.git dest=~/petclinic
   - name: create Maven directory
     file: path=~/maven state=directory mode=0755
   - name: install Maven
@@ -22,3 +22,15 @@
     lineinfile: dest=/home/ec2-user/.bash_profile insertafter="^M2=" line="export M2"
   - name: Add M2 to PATH
     lineinfile: dest=/home/ec2-user/.bash_profile regexp="^PATH=.*:$M2" insertafter="^PATH=" line="PATH=$PATH:$M2"
+  - name: install docker
+    yum: name=docker state=latest
+    become: yes
+    become_method: sudo
+  - name: add groups
+    user: append=yes name=ec2-user groups=docker
+    become: yes
+    become_method: sudo
+  - name: start docker service
+    service: name=docker state=started
+    become: yes
+    become_method: sudo
